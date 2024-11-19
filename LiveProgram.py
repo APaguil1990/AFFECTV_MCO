@@ -1,4 +1,5 @@
 import tkinter as tk
+#import the model created here
 
 class MyGUI():
     
@@ -34,6 +35,7 @@ class MyGUI():
         if hasattr(self, 'newlabel') and self.newlabel:
             self.newlabel.destroy()
      
+        #run the text through the model here
         self.newlabel = tk.Label(self.root, text=self.textbox.get('1.0', tk.END), font=('Arial', 30))
         self.newlabel.pack(pady=10)  # Add some padding for spacekk
         
