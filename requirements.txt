@@ -1,6 +1,10 @@
-streamlit
-transformers
-scipy
-tensorflow
-scikit-learn
+matplotlib
+nltk
 numpy
+pandas
+scipy
+seaborn
+scikit-learn
+tensorflow
+tqdm
+transformers
