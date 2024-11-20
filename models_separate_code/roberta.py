@@ -60,3 +60,20 @@ for i, row in tqdm( df.iterrows(), total = len(df) ):
     except RuntimeError: 
          #Print error message if there is an issue processing a row
         print(f'Broke for id {id}') 
+# Convert the 'res' dictionary to a DataFrame
+results_df = pd.DataFrame(res).T  # Transpose so IDs align with rows
+
+# Reset the index and rename the 'index' column to 'Id' for easier merging
+results_df = results_df.reset_index().rename(columns={
+    'index': 'Id',          # Rename index to Id
+    'roberta_neg': 'roberta_neg',  # Keep RoBERTa score columns
+    'roberta_neu': 'roberta_neu',
+    'roberta_pos': 'roberta_pos'
+})
+
+# Merge results DataFrame with the original DataFrame on 'Id' and 'Index' columns
+if 'Index' in df.columns:
+    results_df = results_df.merge(df, how='left', left_on='Id', right_on='Index')
+else:
+    # If 'Index' is not a column, merge on index
+    results_df = results_df.merge(df, how='left', left_on='Id', right_index=True)
