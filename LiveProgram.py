@@ -1,4 +1,48 @@
+import joblib
+import numpy as np
+import re
+
+from tensorflow.keras.models import load_model
+model = load_model('emotion_model.h5')
+tfidf_vectorizer = joblib.load('tfidf_vectorizer.pkl')
+label_encoder = joblib.load('label_encoder.pkl')
 import tkinter as tk
+import nltk
+from nltk.corpus import stopwords
+
+
+nltk.download('stopwords')
+stop_words = set(stopwords.words('english')) 
+
+custom_stop_words = {
+    "i", 
+    "im", 
+    "ive", 
+    "dont", 
+    "and", 
+    "you", 
+    "he", 
+    "she", 
+    "we", 
+    "they", 
+    "it", 
+    "is", 
+    "are", 
+    "was", 
+    "were", 
+    "their", 
+    "there"
+}
+stop_words.update(custom_stop_words)
+
+# Preprocess text (lowercase, remove stopwords, tokenize)
+def preprocess_text(text): 
+
+    text = text.lower()
+    text = re.sub(r'\W+', ' ', text)
+    words = text.split()
+    words = [word for word in words if word not in stop_words]
+    return ' '.join(words) 
 
 class MyGUI():
     
@@ -29,13 +73,22 @@ class MyGUI():
         self.root.mainloop()
         
     def create_label(self):
-    # Create a new label and pack it at the bottom
     
+        input_text = self.textbox.get('1.0', tk.END).strip()  
+        preprocessed_text = preprocess_text(input_text)  
+
+        new_vector = tfidf_vectorizer.transform([preprocessed_text]).toarray()
+
+        predicted_label = model.predict(new_vector)
+        predicted_class = np.argmax(predicted_label, axis=1)  
+        predicted_emotion = label_encoder.inverse_transform(predicted_class)  
+
+        
         if hasattr(self, 'newlabel') and self.newlabel:
             self.newlabel.destroy()
-     
-        self.newlabel = tk.Label(self.root, text=self.textbox.get('1.0', tk.END), font=('Arial', 30))
-        self.newlabel.pack(pady=10)  # Add some padding for spacekk
+
+        self.newlabel = tk.Label(self.root, text=f"Emotion: {predicted_emotion[0]}", font=('Arial', 30))
+        self.newlabel.pack(pady=10)  # Add some pa
         
     def clear_screen(self):
         self.textbox.delete(1.0, tk.END)
