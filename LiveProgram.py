@@ -51,7 +51,7 @@ class MyGUI():
         self.root.geometry("800x500")
         self.root.title("AFFECTV MCO")
         
-        self.label = tk.Label(self.root, text="Live Text-Emotion Recognition", font=('Helvetica', 20))
+        self.label = tk.Label(self.root, text="Live Text-Emotion Recognition Neural Networks", font=('Helvetica', 20))
         self.label.pack(pady=20)
 
         self.textbox = tk.Text(self.root, height=2, font=('Arial', 25))
